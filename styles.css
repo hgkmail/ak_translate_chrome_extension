@@ -1,14 +1,15 @@
 #translate-button {
   position: absolute;
-  background-color: #4CAF50;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   text-align: center;
-  line-height: 40px;
-  font-size: 18px;
+  vertical-align: middle;
+  line-height: 30px;
+  font-size: 14px;
   cursor: pointer;
   z-index: 10000;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
@@ -22,20 +23,46 @@
 
 #translate-result {
   position: absolute;
-  background-color: #333;
-  color: #fff;
-  padding: 10px 25px 10px 10px;
+  background-color: white;
+  color: #000;
+  padding: 0px;
   border-radius: 5px;
   font-size: 14px;
   max-width: 500px;
   z-index: 10001;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
   display: none;
   word-wrap: break-word;
+  overflow: hidden;
 }
 
 #translate-result.show {
   display: block;
+}
+
+#translate-result .header {
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+#translate-result .header .title {
+  font-size: 14px;
+  color: #555;
+}
+
+#translate-result .footer {
+  background-color: #f0f0f0;
+  padding: 2.5px 10px;
+  border-top: 1px solid #ddd;
+  font-size: 12px;
+  color: #999;
+}
+
+#translate-result .content {
+  padding: 0px;
+  width: 350px;
+  height: 400px;
 }
 
 #translate-result .close {
@@ -49,5 +76,5 @@
 }
 
 #translate-result .close:hover {
-  color: white;
+  color: #555;
 }

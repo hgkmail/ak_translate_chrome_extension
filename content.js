@@ -25,12 +25,15 @@ function hideButton() {
 
 // 显示翻译结果
 function showResult(text, x, y) {
-  resultDiv.innerHTML = `<span class="close">&times;</span>
+  resultDiv.innerHTML = `
+<div class="header"><span class="title">翻译结果</span><span class="close">&times;</span></div>
 <div class="content">
-<iframe id="myIframe" style="width: 400px; height: 500px; border: none;" allow="clipboard-read; clipboard-write;"
+<iframe id="myIframe" style="width: 350px; height: 400px; border: none;" allow="clipboard-read; clipboard-write;"
     src="https://fanyi.baidu.com/m/trans?from=en&to=zh&query=${text}" 
     title="Translation View"></iframe>
-</div>`;
+</div>
+<div class="footer"><span>baidu</span></div>
+`;
   resultDiv.style.left = x + 'px';
   resultDiv.style.top = y + 'px';
   resultDiv.classList.add('show');
@@ -114,7 +117,7 @@ document.addEventListener('mousedown', (event) => {
 // 滚动时隐藏按钮和结果框（简化处理，也可重新计算位置）
 window.addEventListener('scroll', () => {
   hideButton();
-  hideResult();
+  // hideResult();
 });
 
 // 当页面大小改变时，可考虑重新计算位置（本示例略）
