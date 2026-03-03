@@ -5,3 +5,4 @@ npm run build
 cd ..
 rm -rf assets
 cp -r options_page/dist/* .
+mv index.html options.html

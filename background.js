@@ -1,10 +1,10 @@
-// chrome.sidePanel
-//   .setPanelBehavior({ openPanelOnActionClick: true })
-//   .catch((error) => console.error(error));
+chrome.sidePanel
+  .setPanelBehavior({ openPanelOnActionClick: true })
+  .catch((error) => console.error(error));
 
-chrome.action.onClicked.addListener(function () {
-  chrome.tabs.create({ url: chrome.runtime.getURL('index.html') })
-})
+// chrome.action.onClicked.addListener(function () {
+//   chrome.tabs.create({ url: chrome.runtime.getURL('index.html') })
+// })
 
 // 监听来自 content script 的消息
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
