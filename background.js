@@ -87,11 +87,123 @@ const rules = {
 
 // 在扩展安装或启动时应用规则
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.declarativeNetRequest.updateDynamicRules(rules, () => {
-    if (chrome.runtime.lastError) {
-      console.error("规则添加失败:", chrome.runtime.lastError.message);
-    } else {
-      console.log("User-Agent 修改规则已应用");
-    }
-  });
+  // chrome.declarativeNetRequest.updateDynamicRules(rules, () => {
+  //   if (chrome.runtime.lastError) {
+  //     console.error("规则添加失败:", chrome.runtime.lastError.message);
+  //   } else {
+  //     console.log("User-Agent 修改规则已应用");
+  //   }
+  // });
+
+  chrome.declarativeNetRequest.updateDynamicRules({
+            addRules: [{
+                id: 1,
+                priority: 1,
+                action: {
+                    type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
+                    redirect: {
+                        regexSubstitution: String.raw`https://translate-pa.googleapis.com/v1/supportedLanguages?client=tee&display_language=${navigator.language}&key\2`
+                    }
+                },
+                condition: {
+                    regexFilter: "^https://translate-pa.googleapis.com/v1/supportedLanguages?client=tee&display_language=(.*)&key(.*)",
+                    resourceTypes: [chrome.declarativeNetRequest.ResourceType.SCRIPT, chrome.declarativeNetRequest.ResourceType.MAIN_FRAME]
+                }
+            }, {
+                id: 4,
+                priority: 2,
+                action: {
+                    type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+                    requestHeaders: [{
+                        header: "Sec-Ch-Ua-Mobile",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE
+                    }, {
+                        header: "Sec-Ch-Ua-Platform",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE
+                    }, {
+                        header: "Referer",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE
+                    }, {
+                        header: "Sec-Fetch-Site",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+                        value: "same-origin"
+                    }, {
+                        header: "Sec-Fetch-Dest",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+                        value: "document"
+                    }],
+                    responseHeaders: [{
+                        header: "X-Frame-Options",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE
+                    }, {
+                        header: "Content-Security-Policy",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE
+                    }]
+                },
+                condition: {
+                    regexFilter: "translate.google.com|www.deepl.com|fanyi.baidu.com|bing.com/translator",
+                    resourceTypes: [chrome.declarativeNetRequest.ResourceType.SUB_FRAME, chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST]
+                }
+            }, {
+                id: 7,
+                priority: 2,
+                action: {
+                    type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+                    requestHeaders: [{
+                        header: "Sec-Fetch-Dest",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+                        value: "document"
+                    }],
+                    responseHeaders: [{
+                        header: "X-Frame-Options",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE
+                    }, {
+                        header: "Content-Security-Policy",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE
+                    }]
+                },
+                condition: {
+                    requestDomains: ["accounts.google.com"],
+                    resourceTypes: [chrome.declarativeNetRequest.ResourceType.SUB_FRAME, chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST]
+                }
+            }, {
+                id: 5,
+                priority: 2,
+                action: {
+                    type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+                    requestHeaders: [{
+                        header: "User-Agent",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+                        value: "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36"
+                    }, {
+                        header: "Sec-Ch-Ua-Mobile",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+                        value: "?1"
+                    }]
+                },
+                condition: {
+                    regexFilter: "fanyi.baidu.com",
+                    resourceTypes: [chrome.declarativeNetRequest.ResourceType.SUB_FRAME, chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST]
+                }
+            }, {
+                id: 6,
+                priority: 1,
+                action: {
+                    type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+                    responseHeaders: [{
+                        header: "X-Frame-Options",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE
+                    }, {
+                        header: "Content-Security-Policy",
+                        operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE
+                    }]
+                },
+                condition: {
+                    requestDomains: ["chatgpt.com", "deepseek.com", "gemini.google.com", "openai.com", "qianwen.com", "doubao.com", "tencent.com", "grok.com", "moonshot.cn", "kimi.com", "kimi.ai"],
+                    resourceTypes: [chrome.declarativeNetRequest.ResourceType.SUB_FRAME, chrome.declarativeNetRequest.ResourceType.MAIN_FRAME]
+                }
+            }],
+            removeRuleIds: [1, 2, 3, 4, 5, 6, 7]
+        }),
+        console.log("[Extension Utils] DNR Rules updated")
 });

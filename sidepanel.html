@@ -2,12 +2,13 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Sidepanel</title>
   </head>
   <body>
-    <h2>百度翻译</h2>
+    <div style="height: 40px; display: flex; align-items: center; padding: 0 10px;"><span style="font-size: 15px;">百度翻译</span></div>
     <!-- 这里嵌入一个翻译页面的 iframe，user agent是手机 -->
-    <iframe id="myIframe" style="width: 100vw; height: 100vh; border: none;" allow="clipboard-read; clipboard-write;"
+    <iframe id="myIframe" style="width: calc(100vw - 10px); height: calc(100vh - 60px); border: none;" allow="clipboard-read; clipboard-write;"
     src="https://fanyi.baidu.com/#auto/zh/" 
     title="Translation View"></iframe>
     <script src="sidepanel.js"></script>

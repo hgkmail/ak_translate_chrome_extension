@@ -63,6 +63,7 @@
   padding: 0px;
   width: 350px;
   height: 400px;
+  overflow: hidden;
 }
 
 #translate-result .close {
