@@ -12,6 +12,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AboutIcon: typeof import('./src/components/icons/AboutIcon.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCol: typeof import('element-plus/es')['ElCol']
     ElDivider: typeof import('element-plus/es')['ElDivider']
@@ -20,13 +21,23 @@ declare module 'vue' {
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
+    FeedbackIcon: typeof import('./src/components/icons/FeedbackIcon.vue')['default']
+    KeyboardIcon: typeof import('./src/components/icons/KeyboardIcon.vue')['default']
+    MoonIcon: typeof import('./src/components/icons/MoonIcon.vue')['default']
+    NetworkIcon: typeof import('./src/components/icons/NetworkIcon.vue')['default']
+    OpenIcon: typeof import('./src/components/icons/OpenIcon.vue')['default']
+    OptionIcon: typeof import('./src/components/icons/OptionIcon.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SunIcon: typeof import('./src/components/icons/SunIcon.vue')['default']
+    SystemIcon: typeof import('./src/components/icons/SystemIcon.vue')['default']
+    TranslateIcon: typeof import('./src/components/icons/TranslateIcon.vue')['default']
   }
 }
 
 // For TSX support
 declare global {
+  const AboutIcon: typeof import('./src/components/icons/AboutIcon.vue')['default']
   const ElButton: typeof import('element-plus/es')['ElButton']
   const ElCol: typeof import('element-plus/es')['ElCol']
   const ElDivider: typeof import('element-plus/es')['ElDivider']
@@ -35,6 +46,15 @@ declare global {
   const ElRow: typeof import('element-plus/es')['ElRow']
   const ElSelect: typeof import('element-plus/es')['ElSelect']
   const ElSwitch: typeof import('element-plus/es')['ElSwitch']
+  const FeedbackIcon: typeof import('./src/components/icons/FeedbackIcon.vue')['default']
+  const KeyboardIcon: typeof import('./src/components/icons/KeyboardIcon.vue')['default']
+  const MoonIcon: typeof import('./src/components/icons/MoonIcon.vue')['default']
+  const NetworkIcon: typeof import('./src/components/icons/NetworkIcon.vue')['default']
+  const OpenIcon: typeof import('./src/components/icons/OpenIcon.vue')['default']
+  const OptionIcon: typeof import('./src/components/icons/OptionIcon.vue')['default']
   const RouterLink: typeof import('vue-router')['RouterLink']
   const RouterView: typeof import('vue-router')['RouterView']
+  const SunIcon: typeof import('./src/components/icons/SunIcon.vue')['default']
+  const SystemIcon: typeof import('./src/components/icons/SystemIcon.vue')['default']
+  const TranslateIcon: typeof import('./src/components/icons/TranslateIcon.vue')['default']
 }

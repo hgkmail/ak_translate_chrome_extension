@@ -1,11 +1,40 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, type Component, watch } from 'vue'
 import { useSettingsStore } from '@/stores/settings'
 import type { Theme } from '@/stores/settings'
+import SunIcon from '@/components/icons/SunIcon.vue'
+import MoonIcon from '@/components/icons/MoonIcon.vue'
+import SystemIcon from '@/components/icons/SystemIcon.vue'
+import { useColorMode, usePreferredColorScheme, type ColorSchemeType } from '@vueuse/core'
+import { storeToRefs } from 'pinia'
 
 const settings = useSettingsStore()
+const { theme } = storeToRefs(settings)
 
-onMounted(() => settings.load())
+onMounted(() => {
+  // 加载设置
+  settings.load()
+})
+
+// 设置主题
+const colorMode = useColorMode()
+const setColorMode = (mode: Theme | ColorSchemeType) => {
+  if (mode === 'dark' || mode === 'light') {
+    colorMode.value = mode
+  } else {
+    colorMode.value = 'auto'
+  }
+}
+
+// 监听系统主题
+const sysColorScheme = usePreferredColorScheme()
+watch([theme, sysColorScheme], ([newTheme, newSysColorScheme]) => {
+  if (newTheme === 'system') {
+    setColorMode(newSysColorScheme)
+  } else {
+    setColorMode(newTheme)
+  }
+}, { immediate: true })
 
 const version = computed(() => {
   try {
@@ -29,10 +58,10 @@ const engineOptions = [
   { label: '百度翻译', value: 'baidu' },
 ]
 
-const themeOptions: { label: string; value: Theme; icon: string }[] = [
-  { label: '浅色', value: 'light', icon: '☀' },
-  { label: '深色', value: 'dark', icon: '🌙' },
-  { label: '跟随系统', value: 'system', icon: '🖥' },
+const themeOptions: { label: string; value: Theme; icon: Component }[] = [
+  { label: '浅色', value: 'light', icon: SunIcon },
+  { label: '深色', value: 'dark', icon: MoonIcon },
+  { label: '跟随系统', value: 'system', icon: SystemIcon },
 ]
 
 const shortcuts = [
@@ -48,15 +77,10 @@ const shortcuts = [
     <header class="settings-header">
       <div class="header-inner">
         <div class="header-icon">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <rect width="24" height="24" rx="6" fill="#4285F4" />
-            <text x="12" y="17" text-anchor="middle" font-size="13" font-weight="bold" fill="white"
-              font-family="Arial">A</text>
-            <text x="17" y="13" text-anchor="middle" font-size="9" fill="white" font-family="Arial">文</text>
-          </svg>
+          <TranslateIcon />
         </div>
         <div class="header-text">
-          <span class="header-title">Google Translate - Side Panel</span>
+          <span class="header-title">AK Translate - Side Panel</span>
           <span class="header-subtitle">设置</span>
         </div>
       </div>
@@ -70,9 +94,7 @@ const shortcuts = [
           <!-- 通用 -->
           <div class="settings-card">
             <div class="card-title">
-              <el-icon class="card-title-icon" color="#4285F4">
-                <Lightning />
-              </el-icon>
+              <OptionIcon />
               通用
             </div>
             <div class="setting-item">
@@ -105,32 +127,10 @@ const shortcuts = [
             </div>
           </div>
 
-          <!-- 外观 -->
-          <div class="settings-card">
-            <div class="card-title">
-              <el-icon class="card-title-icon" color="#F5A623">
-                <Sunny />
-              </el-icon>
-              外观
-            </div>
-            <div class="setting-item setting-item--column">
-              <span class="setting-label">主题</span>
-              <div class="theme-buttons">
-                <button v-for="opt in themeOptions" :key="opt.value" class="theme-btn"
-                  :class="{ 'theme-btn--active': settings.theme === opt.value }" @click="settings.theme = opt.value">
-                  <span class="theme-btn-icon">{{ opt.icon }}</span>
-                  {{ opt.label }}
-                </button>
-              </div>
-            </div>
-          </div>
-
           <!-- 自动翻译网页 -->
           <div class="settings-card">
             <div class="card-title">
-              <el-icon class="card-title-icon" color="#4285F4">
-                <ChromeFilled />
-              </el-icon>
+              <NetworkIcon />
               自动翻译网页
             </div>
             <div class="setting-item">
@@ -141,43 +141,58 @@ const shortcuts = [
               <el-switch v-model="settings.autoTranslate" />
             </div>
           </div>
+
+          <!-- 外观 -->
+          <div class="settings-card">
+            <div class="card-title">
+              <SunIcon class="sun" />
+              外观
+            </div>
+            <div class="setting-item setting-item--column">
+              <span class="setting-label">主题</span>
+              <div class="theme-buttons">
+                <button v-for="opt in themeOptions" :key="opt.value" class="theme-btn"
+                  :class="{ 'theme-btn--active': settings.theme === opt.value }" @click="settings.theme = opt.value">
+                  <component :is="opt.icon" class="theme-btn-icon" />
+                  {{ opt.label }}
+                </button>
+              </div>
+            </div>
+          </div>
         </el-col>
 
         <!-- Right column -->
         <el-col :span="8">
+          <!-- 键盘快捷键 -->
+          <div class="settings-card">
+            <div class="card-title card-title--plain">
+              <KeyboardIcon />
+              键盘快捷键
+            </div>
+            <div v-for="sc in shortcuts" :key="sc.key" class="shortcut-row">
+              <span class="shortcut-label">{{ sc.label }}</span>
+              <kbd class="shortcut-key">{{ sc.key }}</kbd>
+            </div>
+          </div>
+
           <!-- 关于 -->
           <div class="settings-card">
-            <div class="card-title card-title--plain">关于</div>
+            <div class="card-title card-title--plain">
+              <AboutIcon />
+              关于
+            </div>
             <div class="about-version-row">
               <span class="about-version-label">版本</span>
               <span class="about-version-value">{{ version }}</span>
             </div>
             <p class="about-desc">快速优雅的浏览器翻译扩展。</p>
             <el-button class="about-more-btn" @click="() => { }">
-              了解更多
-              <el-icon class="el-icon--right">
-                <TopRight />
-              </el-icon>
+              了解更多 &nbsp;
+              <OpenIcon />
             </el-button>
             <div class="about-feedback">
-              <el-icon>
-                <Message />
-              </el-icon>
-              反馈：<a href="mailto:support@zenttranslate.com" class="feedback-link">support@zenttranslate.com</a>
-            </div>
-          </div>
-
-          <!-- 键盘快捷键 -->
-          <div class="settings-card">
-            <div class="card-title card-title--plain">
-              <el-icon class="card-title-icon" color="#4285F4">
-                <Grid />
-              </el-icon>
-              键盘快捷键
-            </div>
-            <div v-for="sc in shortcuts" :key="sc.key" class="shortcut-row">
-              <span class="shortcut-label">{{ sc.label }}</span>
-              <kbd class="shortcut-key">{{ sc.key }}</kbd>
+              <FeedbackIcon />
+              反馈：<a href="mailto:hgkmail@126.com" class="feedback-link">hgkmail@126.com</a>
             </div>
           </div>
         </el-col>
@@ -189,13 +204,13 @@ const shortcuts = [
 <style scoped>
 .settings-page {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: var(--el-fill-color-light);
 }
 
 /* Header */
 .settings-header {
-  background: #fff;
-  border-bottom: 1px solid #e4e7ed;
+  background: var(--el-bg-color);
+  border-bottom: 1px solid var(--el-border-color-light);
   padding: 0 32px;
   height: 60px;
   display: flex;
@@ -211,6 +226,9 @@ const shortcuts = [
 .header-icon {
   display: flex;
   align-items: center;
+  background-color: var(--el-border-color-lighter);
+  padding: 8px;
+  border-radius: 8px;
 }
 
 .header-text {
@@ -222,12 +240,12 @@ const shortcuts = [
 .header-title {
   font-size: 15px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--el-text-color-primary);
 }
 
 .header-subtitle {
   font-size: 12px;
-  color: #909399;
+  color: var(--el-text-color-secondary);
 }
 
 /* Main layout */
@@ -239,7 +257,7 @@ const shortcuts = [
 
 /* Card */
 .settings-card {
-  background: #fff;
+  background: var(--el-bg-color);
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 20px;
@@ -250,16 +268,20 @@ const shortcuts = [
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--el-text-color-primary);
   margin-bottom: 20px;
+}
+
+.card-title .sun {
+  color: var(--el-color-primary);
 }
 
 .card-title--plain {
   font-size: 15px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--el-text-color-primary);
 }
 
 .card-title-icon {
@@ -290,12 +312,12 @@ const shortcuts = [
 .setting-label {
   font-size: 14px;
   font-weight: 500;
-  color: #303133;
+  color: var(--el-text-color-primary);
 }
 
 .setting-desc {
   font-size: 12px;
-  color: #909399;
+  color: var(--el-text-color-secondary);
 }
 
 .item-divider {
@@ -316,28 +338,28 @@ const shortcuts = [
   justify-content: center;
   gap: 6px;
   padding: 10px 0;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--el-border-color);
   border-radius: 8px;
-  background: #fff;
+  background: var(--el-bg-color);
   cursor: pointer;
   font-size: 14px;
-  color: #303133;
+  color: var(--el-text-color-primary);
   transition: all 0.2s;
 }
 
 .theme-btn:hover {
-  border-color: #4285F4;
-  color: #4285F4;
+  border-color: var(--ak-button-primary);
+  color: var(--ak-button-primary);
 }
 
 .theme-btn--active {
-  background: #4285F4;
-  border-color: #4285F4;
-  color: #fff;
+  background: var(--ak-button-primary);
+  border-color: var(--ak-button-primary);
+  color: var(--el-bg-color);
 }
 
 .theme-btn--active:hover {
-  color: #fff;
+  color: var(--el-bg-color);
 }
 
 .theme-btn-icon {
@@ -350,12 +372,12 @@ const shortcuts = [
   display: flex;
   justify-content: space-between;
   font-size: 14px;
-  color: #303133;
+  color: var(--el-text-color-primary);
   margin-bottom: 10px;
 }
 
 .about-version-label {
-  color: #606266;
+  color: var(--el-text-color-regular);
 }
 
 .about-version-value {
@@ -364,7 +386,7 @@ const shortcuts = [
 
 .about-desc {
   font-size: 13px;
-  color: #606266;
+  color: var(--el-text-color-regular);
   margin: 0 0 14px;
   line-height: 1.6;
 }
@@ -372,8 +394,8 @@ const shortcuts = [
 .about-more-btn {
   width: 100%;
   margin-bottom: 14px;
-  color: #303133;
-  border-color: #dcdfe6;
+  color: var(--el-text-color-primary);
+  border-color: var(--el-border-color);
 }
 
 .about-feedback {
@@ -381,11 +403,11 @@ const shortcuts = [
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #606266;
+  color: var(--el-text-color-regular);
 }
 
 .feedback-link {
-  color: #4285F4;
+  color: var(--ak-button-primary);
   text-decoration: none;
 }
 
@@ -399,7 +421,7 @@ const shortcuts = [
   align-items: center;
   justify-content: space-between;
   padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--el-fill-color);
 }
 
 .shortcut-row:last-child {
@@ -408,7 +430,7 @@ const shortcuts = [
 
 .shortcut-label {
   font-size: 13px;
-  color: #303133;
+  color: var(--el-text-color-primary);
 }
 
 .shortcut-key {
@@ -416,11 +438,11 @@ const shortcuts = [
   align-items: center;
   justify-content: center;
   padding: 3px 10px;
-  background: #f5f7fa;
-  border: 1px solid #dcdfe6;
+  background: var(--el-fill-color);
+  border: 1px solid var(--el-border-color);
   border-radius: 5px;
   font-size: 12px;
-  color: #303133;
+  color: var(--el-text-color-primary);
   font-family: inherit;
   font-weight: 500;
   white-space: nowrap;

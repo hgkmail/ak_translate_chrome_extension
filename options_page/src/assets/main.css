@@ -1,2 +1,6 @@
 @import './base.css';
 
+/* 颜色变量 */
+:root {
+  --ak-button-primary: #4285f4;
+}

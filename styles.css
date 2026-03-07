@@ -6,19 +6,23 @@
   border-radius: 50%;
   width: 30px;
   height: 30px;
-  text-align: center;
-  vertical-align: middle;
-  line-height: 30px;
-  font-size: 14px;
   cursor: pointer;
   z-index: 10000;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
   display: none;
   user-select: none;
+  align-items: center;
+  justify-content: center;
+}
+
+#translate-button svg {
+  display: block;
+  width: 18px;
+  height: 18px;
 }
 
 #translate-button.show {
-  display: block;
+  display: flex;
 }
 
 #translate-result {

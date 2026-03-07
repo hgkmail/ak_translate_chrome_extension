@@ -5,7 +5,7 @@
 Chrome extension **options page** built with Vue 3 + TypeScript + Vite. Entry: [`src/main.ts`](../src/main.ts), root component: [`src/App.vue`](../src/App.vue).
 
 - **UI**: Element Plus — components and APIs are **auto-imported** (no explicit imports needed in `.vue` files).
-- **State**: Pinia with the **Setup Store** pattern (see [`src/stores/counter.ts`](../src/stores/counter.ts)).
+- **State**: Pinia with the **Setup Store** pattern (see [`src/stores/settings.ts`](../src/stores/settings.ts)).
 - **Routing**: Vue Router with `createMemoryHistory` (required for Chrome extension pages, not `createWebHistory`).
 - **Path alias**: `@` maps to `src/`.
 
@@ -44,7 +44,7 @@ npm run format
 
 - Router uses `createMemoryHistory`, not hash or web history — don't change this; it's required by Chrome extension CSP.
 - New views go in `src/views/`, reusable components in `src/components/`.
-- New stores go in `src/stores/` following the Setup Store pattern in `counter.ts`.
+- New stores go in `src/stores/` following the Setup Store pattern in `settings.ts`.
 - `base: './'` in `vite.config.ts` ensures correct asset paths in the extension package.
 
 ## Integration Points

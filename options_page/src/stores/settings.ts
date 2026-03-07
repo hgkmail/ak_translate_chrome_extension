@@ -4,10 +4,29 @@ import { defineStore } from 'pinia'
 export type Theme = 'light' | 'dark' | 'system'
 
 export interface SettingsState {
+  /**
+   * 翻译目标语言
+   */
   targetLanguage: string
+
+  /**
+   * 翻译引擎，翻译服务
+   */
   translationEngine: string
+
+  /**
+   * 在右键菜单中显示“翻译...”选项
+   */
   showContextMenu: boolean
+
+  /**
+   * 主题：浅色 | 深色 | 跟随系统
+   */
   theme: Theme
+
+  /**
+   * 打开外语网页时自动翻译
+   */
   autoTranslate: boolean
 }
 
@@ -39,6 +58,7 @@ function readStorage(): Promise<Partial<SettingsState>> {
 
 function writeStorage(data: SettingsState): void {
   if (typeof chrome !== 'undefined' && chrome.storage) {
+    // ES6 计算属性名语法
     chrome.storage.sync.set({ [STORAGE_KEY]: data })
     return
   }
