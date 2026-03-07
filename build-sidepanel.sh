@@ -3,5 +3,5 @@
 cd options_page
 npm run build
 cd ../pages
-rm -rf options
-cp -r ../options_page/dist options
+rm -rf side_panel
+cp -r ../options_page/dist side_panel

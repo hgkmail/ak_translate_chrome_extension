@@ -41,4 +41,5 @@ __screenshots__/
 test-results/
 playwright-report/
 
-assets/*
+pages/side_panel/*
+pages/options/*
